@@ -1,0 +1,16 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang Chủ</title>
+</head>
+<body>
+    <h2>Trang Chủ</h2>
+    <p>Xin chào, {{ user.username }}!</p>
+    <p>Superuser: {{ user.is_superuser }}</p>
+    <p>Staff: {{ user.is_staff }}</p>
+    <p>Active: {{ user.is_active }}</p>
+
+    <a href="{% url 'logout' %}">Đăng Xuất</a>
+</body>
+</html>

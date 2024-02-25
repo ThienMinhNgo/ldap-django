@@ -1,0 +1,59 @@
+sudo apt-get update -y
+sudo apt-get install slapd ldap-utils -y
+sudo dpkg-reconfigure slapd
+sudo slapcat
+
+admin pass: Abc13579*
+
+
+sudo apt-get install phpldapadmin -y
+sudo nano /etc/phpldapadmin/config.php
+
+$servers->setValue('server','name','My LDAP Server');
+$servers->setValue('server','host','69.87.216.102');
+$servers->;setValue('server','base',array('dc=tel4vn,dc=edu,dc=vn'));
+$servers->setValue('login','auth_type','session');
+$servers->setValue('login','bind_id','cn=admin,dc=tel4vn,dc=edu,dc=vn');
+$servers->setValue('auto_number','min',array('uidNumber'=>10000,'gidNumber'=>10000));
+
+sudo a2dissite 000-default.conf
+sudo systemctl restart apache2
+
+http://44..202.19.175/phpldapadmin
+
+# memory_limit = 256M
+sudo nano /etc/php/8.1/apache2/php.ini
+sudo systemctl restart apache2
+
+
+sudo apt-get install unzip
+sudo unzip /home/ubuntu/htdocs-20240222T150456Z-001.zip
+sudo unzip /home/ubuntu/lib-20240222T150218Z-001.zip
+
+sudo rm -rf /usr/share/phpldapadmin/htdocs
+sudo rm -rf /usr/share/phpldapadmin/lib
+
+sudo cp -r /home/ubuntu/htdocs /usr/share/phpldapadmin/htdocs
+sudo cp -r /home/ubuntu/lib /usr/share/phpldapadmin/lib
+
+
+# Tao user read only
+pass: Ghk13579*
+slappasswd
+sudo nano readonly-user.ldif
+
+dn: cn=readonly,ou=users,dc=minhthien,dc=com
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: readonly
+userPassword: {SSHA}aFg13iLLJcTZUTyzL+c3tMWXPj6uN1R3
+description: Bind DN user for LDAP Operations
+
+readonly:  Ghk13579*
+thien.ngominh: Qrt13579*
+phuong.langthi: Thk13579*
+
+
+ldapsearch -x -b "dc=minhthien,dc=com" -D "cn=readonly,cn=users,ou=testou,dc=minhthien,dc=com" -W -H ldap://44.202.19.175 -LLL "(uid=thien.ngominh)"
+ldapsearch -x -b "dc=minhthien,dc=com" -D "cn=readonly,cn=users,ou=    testou,dc=minhthien,dc=com" -W -H ldap://44.202.19.175 -LLL "(uid=phuong.langthi)"
+
